@@ -1,0 +1,56 @@
+#pragma once
+
+#include<vector>
+#include<iostream>
+#include<string>
+#include<sstream>
+
+namespace input{
+  class sequenceInt{
+  private:
+    std::vector<vector<int>> itemSets;
+    
+  public:
+    sequenceInt(){}
+    ~sequenceInt(){}
+    
+    void addItemSet(vector<int> itemSet){
+      itemSets.push_back(std::move(itemSet));
+    }
+    
+    vector<vector<int>> getItemSets(){
+      return itemSets;
+    }
+
+    void printItemSet(){
+      std::cout << toString();
+    }
+
+    std::string toString(){
+      std::string ss ="";
+      for(auto itemSet : itemSets){
+	ss.append("(");
+	for(auto item : itemSet){
+	  ss.append(to_string(item));
+	  ss.append(" ");
+	}
+	ss.append(")");
+      }
+      return ss.append("    ");
+    }
+    
+    vector<vector<int>> getItems(){
+      return itemSets;
+    }
+    
+    vector<int> getItemSet(int index){
+      return itemSets[index];
+    }
+    
+    
+    int getSize(){
+      return itemSets.size();
+    }
+  };
+}
+
