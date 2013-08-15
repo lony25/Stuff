@@ -5,6 +5,8 @@
 #include<sstream>
 #include<algorithm>
 #include<string>
+#include<exception>
+#include<iostream>
 
 #include "sequenceString.h"
 
