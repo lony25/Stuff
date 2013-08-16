@@ -1,14 +1,21 @@
 #pragma once
 
+#include<string>
+
+#ifndef NULL
+#define NULL nullptr
+#endif
+
 namespace ds{
   template <typename T> class binaryTree{
   private:
+    struct Node;
     int _size = 0;
     Node* _root = nullptr;
     bool _allowSameElementMultipleTimes = true;
 
   public:
-    binaryTree(boolean allowSameElementMultipleTimes){
+    binaryTree(bool allowSameElementMultipleTimes){
       _allowSameElementMultipleTimes = allowSameElementMultipleTimes;
     }
 
@@ -16,23 +23,22 @@ namespace ds{
     }
 
     int size(){
-      return _size;
+      return this->_size;
     }
 
     void addElement(T element){
-      Node* z = new Node();
-      z.key = element;
+      Node* z = new Node(element);
+      //      z.key = element;
       
       Node* y = nullptr;
-      Node* x = _root;
+      Node* x = this->_root;
       
       while(x!=NULL){
 	y=x;
-	int compare = z->key.compareTo(x->key);
-	if(compare<0)
+	if(z->key < x->key)
 	  x=x->left;
 	else{
-	  if(compare==0 && !_allowSameElementsMultipleTimes)
+	  if(z->key == x->key && !this->_allowSameElementMultipleTimes)
 	    return;
 	  x=x->right;
 	}
@@ -40,8 +46,8 @@ namespace ds{
 
       z->parent = y;
       if(y==NULL)
-	_root=z;
-      else if(z->key.compareTo(y->key) < 0)
+	this->_root=z;
+      else if(z->key < y->key)
 	y->left = z;
       else
 	y->right = z;
@@ -50,21 +56,21 @@ namespace ds{
     }
 
     bool isEmpty(){
-      return _root==NULL;
+      return this->_root==NULL;
     }
 
     void remove(T element){
-      Node* z = search(_root,element);
+      Node* z = search(this->_root,element);
       if(z==NULL)
 	return;
       performDelete(z);
     }
 
     T popMinimum(){
-      if(_root==NULL)
+      if(this->_root==NULL)
 	return NULL;
       
-      Node* x = _root;
+      Node* x = this->_root;
       while(x->left!=NULL)
 	x=x->left;
 
@@ -90,16 +96,16 @@ namespace ds{
     }
 
     T minimum(){
-      if(_root==NULL)
+      if(this->_root==NULL)
 	return NULL;
-      return minimum(_root)->key;
+      return minimum(this->_root)->key;
     }
 
     T popMaximum(){
-      if(_root==NULL)
+      if(this->_root==NULL)
 	return NULL;
       
-      Node x = _root;
+      Node x = this->_root;
       while(x->right!=NULL)
 	x = x->right;
       
@@ -109,59 +115,52 @@ namespace ds{
     }
 
     T maximum(){
-      if(_root==NULL)
+      if(this->_root==NULL)
 	return NULL;
       
-      returm maximum(_root)->key;
+      return maximum(this->_root)->key;
     }
 
     bool contains(T k){
-      return search(_root, k)!=NULL;
+      return search(this->_root, k)!=NULL;
     }
 
     std::string toString(){
-      if(_root==NULL)
+      if(this->_root==NULL)
 	return "";
       std::string ss;
-      return print(_root,ss);
+      return print(this->_root,ss);
     }
 
   private:
-    class Node{
-      T key = NULL;
-      Node* left = NULL;
-      Node* right = NULL;
-      Node* parent = NULL;
+    struct Node{
+      T key;
+      Node* left;
+      Node* right;
+      Node* parent;
 
-      std::string toString(){
-	std::string ss="";
-	ss.append(key.toString());
-	if(left!=NULL){
-	  ss.append(" L= ");
-	  ss.append(left->key);
-	}
-	if(right!=NULL){
-	  ss.append(" R= ");
-	  ss.append(right->key);
-	}
-	
-	return ss;
+    Node(T element):key(element){
+	this->left=NULL;
+	this->right=NULL;
+	this->parent=NULL;
+      }
+      Node(){
+	key=NULL;
+	this->left=NULL;
+	this->right=NULL;
+	this->parent=NULL;
       }
 
-      int compareTo(const Node& node){
-	if(key>node->key)
-	  return 1;
-	else if(key<node->key)
-	  return -1;
-	else 
-	  return 0;
+      std::string toString(){
+	using std::to_string;
+	return to_string(key);
       }
     };
 
-    std::string print(const Node* _root, std::string ss){
-      if(x!=NULL && x->key !=NULL){
+    std::string print( Node* x, std::string& ss){
+      if(x!=NULL ){
 	print(x->left, ss);
-	ss.append(x->key);
+	ss.append(x->toString());
 	ss.append(" ");
 	print(x->right, ss);
       }
@@ -184,7 +183,7 @@ namespace ds{
 	x->parent = y->parent;
 
       if(y->parent!=NULL)
-	_root=x;
+	this->_root=x;
       else if(y == y->parent->left)
 	y->parent->left = x;
       else
@@ -198,7 +197,7 @@ namespace ds{
 
     Node* successor(Node* & x){
       if(x->right!=NULL)
-	return minimum(s->right);
+	return minimum(x->right);
       Node* y = x->parent;
       while(y!=NULL && x==y->right){
 	x= y;
@@ -222,9 +221,9 @@ namespace ds{
     }
 
     Node* lowerNode(T k){
-      Node* x= _root;
+      Node* x= this->_root;
       while(x!= NULL){
-	if(k.compareTo(x->key) > 0){
+	if(k > x->key){
 	  if(x->right!=NULL)
 	    x=x->right;
 	  else
@@ -247,9 +246,9 @@ namespace ds{
     }
 
     Node* higherNode(T k){
-      Node* x = _root;
+      Node* x = this->_root;
       while(x!=NULL){
-	if(k.compareTo(x->key) < 0){
+	if(k < x->key){
 	  if(x->left != NULL)
 	    x = x->left;
 	  else
@@ -285,7 +284,7 @@ namespace ds{
 
     Node* search(Node* &x, T k){
       while(x!= NULL && k!= x->key){
-	if(k.compareTo(x->key) < 0)
+	if(k < x->key)
 	  x = x->left;
 	else
 	  x = x->right;
