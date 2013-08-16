@@ -5,6 +5,8 @@
 #include<fstream>
 #include<string>
 #include<sstream>
+#include<vector>
+#include<iostream>
 
 namespace input{
   class transactionDatabase{
@@ -19,7 +21,7 @@ namespace input{
 
     void addTransaction(std::vector<int> transaction){
       _transactions.push_back(transaction);
-      _items.insert(_items.end(), transaction.begin(), transaction,end());
+      std::copy(transaction.begin(), transaction.end(), _items.end());
     }
 
     void loadFile(std::string path){
@@ -27,9 +29,9 @@ namespace input{
       try{
 	std::ifstream file(path);
 	while(getline(file,line)){
-	  if(line.chatAt(0)!='#' || line.charAt(0)!= '%' || line.charAt(0) != '@'){
+	  if(line[0]!='#' || line[0]!= '%' || line[0] != '@'){
 	    std::string temp;
-	    stringstream ss(line);
+	    std::stringstream ss(line);
 	    std::vector<std::string> token;
 	    while(ss>>temp)
 	      token.push_back(temp);
@@ -47,7 +49,7 @@ namespace input{
       for(auto itemSet: _transactions){
 	std::cout<<"0"<<count<<": ";
 	print(itemSet);
-	std::endl;
+	std::cout<<std::endl;
 	count++;
       }
     }
@@ -70,7 +72,7 @@ namespace input{
       for(auto attribute : itemsString){
 	int item = std::stoi(attribute);
 	itemSet.push_back(item);
-	_items.push_back(item);
+	_items.insert(item);
       }
       _transactions.push_back(itemSet);
     }
@@ -81,7 +83,7 @@ namespace input{
 	ss.append(std::to_string(item));
 	ss.append(" ");
       }
-      std::cout<<ss<<endl;
+      std::cout<<ss<<std::endl;
     }
 
   };

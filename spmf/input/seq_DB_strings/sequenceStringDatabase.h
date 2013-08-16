@@ -24,9 +24,9 @@ namespace input{
       try{
 	std::ifstream file(path);
 	while(std::getline(file, line)){
-	  if(line.chatAt(0)!='#' || line.charAt(0)!= '%' || line.charAt(0) != '@'){
+	  if(line[0]!='#' || line[0]!= '%' || line[0] != '@'){
 	    std::string temp;
-	    stringstream ss(line);
+	    std::stringstream ss(line);
 	    std::vector<std::string> token;
 	    while(ss>>temp)
 	      token.push_back(temp);
@@ -40,18 +40,18 @@ namespace input{
     }
 
     void addSequence(std::vector<std::string> tokens){
-      sequenceString seq;
+      sequenceString seq{_sequences.size()};
       std::vector<std::string> itemSet;
       
       for(auto item: tokens){
-	if(item.at(0) =="<"){}
+	if(item[0] =='<'){}
 	else if(item =="-1"){
 	  sort(itemSet.begin(), itemSet.end());
 	  seq.addItemSet(itemSet);
 	  itemSet.clear();
 	}
 	else if(item=="-2")
-	  _sequences.push_back(sequence);
+	  _sequences.push_back(seq);
 	else
 	  itemSet.push_back(item);
       }
@@ -65,7 +65,7 @@ namespace input{
       for(auto seq: _sequences){
 	std::cout<<seq.getId()<<": ";
 	seq.print();
-	std::endl;
+	std::cout<<std::endl;
       }
     }
 
@@ -81,7 +81,7 @@ namespace input{
     std::string toString(){
       std::string ss="";
       for (auto seq: _sequences){
-	ss.append(std::to_string(seq.getId));
+	ss.append(std::to_string(seq.getId()));
 	ss.append(": ");
 	ss.append(seq.toString());
 	ss.append("\n");

@@ -26,9 +26,9 @@ namespace input{
       try{
 	std::ifstream file(path);
 	while(std::getline(file,line)){
-	  if(line.chatAt(0)!='#' || line.charAt(0)!= '%' || line.charAt(0) != '@'){
+	  if(line[0]!='#' || line[0]!= '%' || line[0] != '@'){
 	    std::string temp;
-	    stringstream ss(line);
+	    std::stringstream ss(line);
 	    std::vector<std::string> token;
 	    while(ss>>temp)
 	      token.push_back(temp);
@@ -42,10 +42,10 @@ namespace input{
     }
 
     void addSequence(std::vector<std::string> tokens){
-      sequenceInt seq = new sequenceInt();
+      sequenceInt seq;
       std::vector<int> itemSet;
       for(auto token: tokens){
-	if(token.charAt(0)=='<'){}
+	if(token[0]=='<'){}
 	else if(token.compare("-1")) {
 	  seq.addItemSet(itemSet);
 	  itemSet.clear();
@@ -69,9 +69,9 @@ namespace input{
     
     void print(){
       for(int i=0;i<sequences.size();++i){
-	std::cout<<count<<": ";
-	sequences.getItemSet(i).printItemSet();
-	std::endl;
+	std::cout<<i<<": ";
+	sequences.at(i).printItemSet();
+	std::cout<<std::endl;
       }
     }
 
@@ -82,7 +82,7 @@ namespace input{
       
       long size =0;
       for(auto seq:sequences)
-	size+= seq.size();
+	size+= seq.getSize();
       
       double meanSize =  ((float)size)/((float)sequences.size());
       
@@ -92,9 +92,9 @@ namespace input{
     std::string toString(){
       std::string ss ="";
       for(int i=0;i<sequences.size();++i){
-	ss.append(to_string(i));
+	ss.append(std::to_string(i));
 	ss.append(": ");
-	ss.append(sequences.getItemSet(i).toString());
+	ss.append(sequences.at(i).toString());
 	ss.append("\n");
       }
       

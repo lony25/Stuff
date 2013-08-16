@@ -4,6 +4,7 @@
 #include<string>
 #include<map>
 #include<set>
+#include<iostream>
 
 namespace input{
   class sequenceString{
@@ -15,8 +16,8 @@ namespace input{
   sequenceString(int i): _id(i) {}
     ~sequenceString(){}
 
-    void addItemSet(std::vector<std::string> && itemSet){
-      _itemSets.push_back(std::move(itemSet));
+    void addItemSet(std::vector<std::string> itemSet){
+      _itemSets.push_back(itemSet);
     }
 
     void print(){std::cout<<toString();}
@@ -45,13 +46,13 @@ namespace input{
 
     std::vector<std::string> getItemSet(int index){
       if(index>=0 && index<_itemSets.size())
-	return _itemSets.at(i);
+	return _itemSets.at(index);
     }
 
     int size(){return _itemSets.size();}
     
     sequenceString cloneSequenceMinusItems(std::map<std::string, std::set<int>> mapSeqId, double relativeMinSup){
-      sequenceString seq;
+      sequenceString seq{getId()};
       for(auto itemSet: _itemSets){
 	std::vector<std::string> newItemSet = cloneItemSetMinusItems(itemSet, mapSeqId, relativeMinSup);
 	if(newItemSet.size()!=0)
@@ -63,7 +64,7 @@ namespace input{
     std::vector<std::string> cloneItemSetMinusItems(std::vector<std::string> itemSet, std::map<std::string, std::set<int>> mapSeqId, double relativeMinSup){
       std::vector<std::string> newItemSet;
       for(auto item: itemSet){
-	mapT::iterator it = mapSeqId.find(item);
+	std::map<std::string,std::set<int>>::iterator it = mapSeqId.find(item);
 	if(it!= mapSeqId.end() && it->second.size() >= relativeMinSup)
 	  newItemSet.push_back(item);
       }

@@ -31,7 +31,7 @@ namespace input{
       for(auto itemSet : itemSets){
 	ss.append("(");
 	for(auto item : itemSet){
-	  ss.append(to_string(item));
+	  ss.append(std::to_string(item));
 	  ss.append(" ");
 	}
 	ss.append(")");
