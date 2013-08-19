@@ -1,6 +1,11 @@
 #pragma once
 
+#include<string>
+#include<iostream>
+
+#ifndef NULL
 #define NULL nullptr
+#endif
 
 namespace ds
 {
@@ -39,10 +44,10 @@ namespace ds
 
       void add(T element)
       {
-	Node* z{element};
+	Node* z = new Node(element);
 	Node* y = NULL;
 	Node* x = this->_root;
-	
+
 	while(x!= NULL)
 	  {
 	    y = x;
@@ -67,7 +72,9 @@ namespace ds
 	z->left = NULL;
 	z->right = NULL;
 	z->color = RED;
+	std::cout<<"Before fixup"<<std::endl;
 	insertFixup(z);
+	std::cout<<z->toString()<<std::endl;
       }
 
       void remove(T element)
@@ -78,7 +85,109 @@ namespace ds
 	performDelete(z);
       }
 
+      T lower(const T& k)
+      {
+	Node* result = lowerNode(k);
+	if(result==NULL)
+	  return NULL;
+	else
+	  return result->key;
+	
+      }
+      
+      T higher(const T& k)
+      {
+	Node* result = higherNode(k);
+	if(result==NULL)
+	  return NULL;
+	else
+	  return result->key;
+      }
+
+      T popMinimum ()
+      {
+	if(this->_root==NULL)
+	  return NULL;
+	Node* x = this->_root;
+	while(x->left != NULL)
+	  x = x->left;
+	T value = x->key;
+	performDelete(x);
+	return value;
+      }
+
+      T popMaximum()
+      {
+	if(this->_root==NULL)
+	  return NULL;
+	Node* x = this->_root;
+	while(x->right != NULL)
+	  x = x->right;
+	T value = x->key;
+	performDelete(x);
+	return value;
+      }
+
+      T minimum()
+      {
+	if(this->_root == NULL)
+	  return NULL;
+	return minimum(this->_root)->key;
+      }
+
+      T maximum()
+      {
+	if(this->_root == NULL)
+	  return NULL;
+	return maximum(this->_root)->key;
+      }
+
+      bool hasNode(const T& k)
+      {
+	return search(this->_root, k) != NULL;
+      }
+
+      std::string toString()
+	{
+	  if(this->_root==NULL)
+	    return "";
+	  std::string ss;
+	  return print(this->_root, ss);
+	}
+
     private:
+      struct Node
+      {
+	T key ;
+	bool color;
+	Node* left ;
+	Node* right;
+	Node* parent;
+	
+      Node(T element):key(element)
+	{
+	  this->left = NULL;
+	  this->right = NULL;
+	  this->parent = NULL;
+	  this->color = BLACK;
+	}
+	Node()
+	  {
+	    key = NULL;
+	    this->left = NULL;
+	    this->right = NULL;
+	    this->parent = NULL;
+	    this->color = BLACK;
+	  }
+	~Node(){}
+	
+	std::string toString()
+	  {
+	    using std::to_string;
+	    return to_string(key);
+	  }
+      };
+      
       void leftRotate(Node* x)
       {
 	Node* y = x->right;
@@ -122,10 +231,12 @@ namespace ds
 
       void insertFixup(Node* z)
       {
-	while(z->parent->color == RED)
+	while(z->parent && z->parent->color == RED)
 	  {
+	    std::cout<<"In while"<<std::endl;
 	    if(z->parent == z->parent->parent->left)
 	      {
+		std::cout<<"In first if"<<std::endl;
 		Node* y = z->parent->parent->right;
 		if(y->color == RED)
 		  {
@@ -148,9 +259,13 @@ namespace ds
 	      }
 	    else
 	      {
-		Node* y = z->parent->parent->left;
-		if(y->color == RED)
+		std::cout<<"In else"<<std::endl;
+		Node* y;
+		if(z->parent->parent)
+		  y = z->parent->parent->left;
+		if(y && y->color == RED)
 		  {
+		    std::cout<<"In else if"<<std::endl;
 		    z->parent->color = BLACK;
 		    y->color = BLACK;
 		    z->parent->parent->color = RED;
@@ -158,6 +273,7 @@ namespace ds
 		  }
 		else
 		  {
+		    std::cout<<"In else else"<<std::endl;
 		    if(z==z->parent->left)
 		      {
 			z = z->parent;
@@ -165,12 +281,15 @@ namespace ds
 		      }
 		    
 		    z->parent->color = BLACK;
-		    z->parent->parent->color = RED;
-		    leftRotate(z->parent->parent);
+		    if(z->parent->parent)
+		      {
+			z->parent->parent->color = RED;
+			leftRotate(z->parent->parent);
+		      }
 		  }
 	      }
 	  }
-	this->root->color = BLACK;
+	this->_root->color = BLACK;
       }
       
       void transplant(Node* u, Node* v)
@@ -326,6 +445,91 @@ namespace ds
 	return y;
       }
 
+      Node* lowerNode(const T& k)
+      {
+	Node* x = this->_root;
+	while(x!= NULL)
+	  {
+	    if(k > x->key)
+	      if(x->right!=NULL)
+		x = x->right;
+	      else
+		return x;
+	    else
+	      if(x->left!=NULL)
+		x=x->left;
+	      else
+		{
+		  Node* current = x;
+		  while(current->parent != NULL 
+			&& current->parent->left = current)
+		    current=current->parent;
+		  return current->parent;
+		}
+	  }
+	return NULL;
+      }
+
+      Node* higherNode(const T& k)
+      {
+	Node* x = this->_root;
+	while(x!=NULL)
+	  {
+	    if( k < x->key)
+	      if(x->left!=NULL)
+		x=x->left;
+	      else
+		return x;
+	    else
+	      if(x->right != NULL)
+		x = x->right;
+	      else
+		{
+		  Node* current = x;
+		  while(current->parent != NULL &&
+			current->parent->right == current)
+		    current = current->parent;
+		  return current->parent;
+		}
+	  }
+	return NULL;
+      }
       
+      Node* minimum(Node* x)
+      {
+	while(x->left != NULL)
+	  x = x->left;
+	return x;
+      }
+      
+      Node* maximum(Node* x)
+      {
+	while(x->right != NULL)
+	  x = x->right;
+	return x;
+      }
+
+      Node* search(Node* x, const T& k)
+      {
+	while(x!= NULL && k!= x->key)
+	  if(k < x->key)
+	    x = x->left;
+	  else
+	    x = x->right;
+	
+	return x;
+      }
+      
+      std::string print(Node* x, std::string& ss)
+	{
+	  if(x!=NULL)
+	    {
+	      print(x->left, ss);
+	      ss.append(x->toString());
+	      ss.append(" ");
+	      print(x->right, ss);
+	    }
+	  return ss;
+	}
     };
 }
