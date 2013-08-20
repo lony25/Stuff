@@ -72,9 +72,7 @@ namespace ds
 	z->left = NULL;
 	z->right = NULL;
 	z->color = RED;
-	std::cout<<"Before fixup"<<std::endl;
 	insertFixup(z);
-	std::cout<<z->toString()<<std::endl;
       }
 
       void remove(T element)
@@ -194,16 +192,15 @@ namespace ds
 	x->right = y->left;
 	if(y->left!=NULL)
 	  y->left->parent = x;
-	
+
 	y->parent = x->parent;
 	
-	if(x->parent!=NULL)
+	if(x->parent==NULL)
 	  this->_root = y;
-	else if(x == x->parent->left)
+	else if(x->parent->left && x == x->parent->left)
 	  x->parent->left = y;
 	else
 	  x->parent->right = y;
-
 	y->left = x;
 	x->parent = y;
       }
@@ -220,7 +217,7 @@ namespace ds
 
 	if(x->parent == NULL)
 	  this->_root = y;
-	else if(x == x->parent->right)
+	else if(x->parent->right && x == x->parent->right)
 	  x->parent->right = y;
 	else
 	  x->parent->left = y;
@@ -233,12 +230,10 @@ namespace ds
       {
 	while(z->parent && z->parent->color == RED)
 	  {
-	    std::cout<<"In while"<<std::endl;
 	    if(z->parent == z->parent->parent->left)
 	      {
-		std::cout<<"In first if"<<std::endl;
 		Node* y = z->parent->parent->right;
-		if(y->color == RED)
+		if(y && y->color == RED)
 		  {
 		    z->parent->color = BLACK;
 		    y->color = BLACK;
@@ -247,25 +242,26 @@ namespace ds
 		  }
 		else
 		  {
-		    if(z == z->parent->right)
+		    if(z->parent->right && z == z->parent->right)
 		      {
 			z = z->parent;
 			leftRotate(z);
 		      }
 		    z->parent->color = BLACK;
-		    z->parent->parent->color = RED;
-		    rightRotate(z->parent->parent);
+		    if(z->parent->parent)
+		      {
+			z->parent->parent->color = RED;
+			rightRotate(z->parent->parent);
+		      }
 		  }
 	      }
 	    else
 	      {
-		std::cout<<"In else"<<std::endl;
 		Node* y;
 		if(z->parent->parent)
 		  y = z->parent->parent->left;
 		if(y && y->color == RED)
 		  {
-		    std::cout<<"In else if"<<std::endl;
 		    z->parent->color = BLACK;
 		    y->color = BLACK;
 		    z->parent->parent->color = RED;
@@ -273,8 +269,7 @@ namespace ds
 		  }
 		else
 		  {
-		    std::cout<<"In else else"<<std::endl;
-		    if(z==z->parent->left)
+		    if(z->parent->left && z==z->parent->left)
 		      {
 			z = z->parent;
 			rightRotate(z);
@@ -300,6 +295,8 @@ namespace ds
 	  u->parent->left = v;
 	else
 	  u->parent->right = v;
+	if(v)
+	  v->parent = u->parent;
       }
 
       void performDelete(Node* z)
@@ -307,12 +304,24 @@ namespace ds
 	Node* x;
 	Node* y = z;
 	bool yOriginalColor = y->color;
-	if(z->left == NULL)
+	if(!z->left && !z->right)
+	  {
+	    if(z->parent->color==RED)
+	      z->parent->color=BLACK;
+	    else
+	      z->parent->color=RED;
+	    transplant(z,NULL);
+	    z=NULL;
+	    this->_size--;
+	    return;
+	  }
+	
+	if(z->left == NULL )
 	  {
 	    x = z->right;
 	    transplant(z, z->right);
 	  }
-	else if(z->right ==NULL)
+	else if(z->right ==NULL )
 	  {
 	    x = z->left;
 	    transplant(z, z->left);
@@ -322,7 +331,6 @@ namespace ds
 	    y = minimum(z->right);
 	    yOriginalColor = y->color;
 	    x = y->right;
-	    
 	    if(y->parent == z)
 	      x->parent = y;
 	    else
@@ -413,7 +421,6 @@ namespace ds
 		  }
 	      }
 	  }
-	
 	x->color = BLACK;
       }
 
@@ -497,14 +504,14 @@ namespace ds
       
       Node* minimum(Node* x)
       {
-	while(x->left != NULL)
+	while(x->left != NULL )
 	  x = x->left;
 	return x;
       }
       
       Node* maximum(Node* x)
       {
-	while(x->right != NULL)
+	while(x->right != NULL )
 	  x = x->right;
 	return x;
       }
