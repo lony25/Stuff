@@ -39,5 +39,6 @@ int main()
   std::cout<<"All elements: "<<tree.toString()<<" Size of Tree: "<<tree.getSize()<<std::endl;
   std::cout<<"pop maximum: "<<tree.popMaximum()<<std::endl;
   std::cout<<"All elements: "<<tree.toString()<<" Size of Tree: "<<tree.getSize()<<std::endl;
+  
   return 0;
 }

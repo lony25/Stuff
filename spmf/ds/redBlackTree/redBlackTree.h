@@ -24,13 +24,17 @@ namespace ds
       bool _allowSameElementsMultipleTimes = true;
       
     public:
-      redBlackTree(bool allowSameElementsMultipleTimes)
+    redBlackTree(bool allowSameElementsMultipleTimes):_root()
 	{
 	 this-> _allowSameElementsMultipleTimes = allowSameElementsMultipleTimes;
 	}
 
-      redBlackTree(){}
-      ~redBlackTree(){}
+    redBlackTree():_root()
+	{}
+      ~redBlackTree()
+	{
+	  delete _root;
+	}
 
       int getSize()
       {
@@ -346,7 +350,8 @@ namespace ds
 	  }
 	if(yOriginalColor == BLACK)
 	  deleteFixup(x);
-	
+
+	delete z;
 	this->_size--;
       }
 
