@@ -12,7 +12,8 @@ namespace ds
     KDNode* below;
     
 
-  KDNode(std::vector<double> val, int d): _values(val),_d(d){};
+  KDNode(std::vector<double> val, int d): _values(val),_d(d){}
+  KDNode():_values(),_d(){}
     ~KDNode()
       {
 	_values.clear();

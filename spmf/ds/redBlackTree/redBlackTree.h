@@ -17,7 +17,6 @@ namespace ds
     {
     private:
       struct Node;
-      const Node* _sentinel;
       int _size=0;
       Node* _root;
       
@@ -35,17 +34,27 @@ namespace ds
 	{
 	  delete _root;
 	}
+      
 
+      /*
+	return number of elements stored in rbtree
+      */
       int getSize()
       {
 	return _size;
       }
       
+      /*
+	return true, is tree is empty, false otherwise
+      */
       bool isEmpty()
       {
 	return this->_root==NULL;
       }
 
+      /*
+	add elements to the tree
+      */
       void add(T element)
       {
 	Node* z = new Node(element);
@@ -64,7 +73,7 @@ namespace ds
 	  }
 
 	z->parent = y;
-	if(y==NULL)
+	if(y==NULL) 
 	  this->_root = z;
 	else if(z->key < y->key)
 	  y->left = z;
@@ -79,6 +88,9 @@ namespace ds
 	insertFixup(z);
       }
 
+      /*
+	remove an elment from the tree
+      */
       void remove(T element)
       {
 	Node* z = search(this->_root, element);
@@ -87,6 +99,9 @@ namespace ds
 	performDelete(z);
       }
 
+      /*
+	return the largest element having the value lower than given element
+      */
       T lower(const T& k)
       {
 	Node* result = lowerNode(k);
@@ -97,6 +112,9 @@ namespace ds
 	
       }
       
+      /*
+	return the lowest element having the value higher than given element
+      */
       T higher(const T& k)
       {
 	Node* result = higherNode(k);
@@ -106,6 +124,9 @@ namespace ds
 	  return result->key;
       }
 
+      /*
+	Get the minimum element in tree and remove it from tree
+      */
       T popMinimum ()
       {
 	if(this->_root==NULL)
@@ -118,6 +139,9 @@ namespace ds
 	return value;
       }
 
+      /*
+	Get the maximum element in tree and remove it from tree
+      */
       T popMaximum()
       {
 	if(this->_root==NULL)
@@ -130,6 +154,9 @@ namespace ds
 	return value;
       }
 
+      /*
+	Get the minimum element in the tree
+      */
       T minimum()
       {
 	if(this->_root == NULL)
@@ -137,6 +164,9 @@ namespace ds
 	return minimum(this->_root)->key;
       }
 
+      /*
+	Get the maximum element in the tree
+      */
       T maximum()
       {
 	if(this->_root == NULL)
@@ -144,6 +174,9 @@ namespace ds
 	return maximum(this->_root)->key;
       }
 
+      /*
+	Check if an element is contained in the tree.
+      */
       bool hasNode(const T& k)
       {
 	return search(this->_root, k) != NULL;
@@ -190,10 +223,14 @@ namespace ds
 	  }
       };
       
+      /*
+	perform left rotation of the subtree
+      */
       void leftRotate(Node* x)
       {
 	Node* y = x->right;
 	x->right = y->left;
+
 	if(y->left!=NULL)
 	  y->left->parent = x;
 
@@ -209,6 +246,9 @@ namespace ds
 	x->parent = y;
       }
 
+      /*
+	perform right rotation of the subtree
+      */
       void rightRotate(Node* x)
       {
 	Node* y = x->left;
@@ -230,6 +270,9 @@ namespace ds
 	x->parent = y;
       }
 
+      /*
+	fix the insertion at a given node
+      */
       void insertFixup(Node* z)
       {
 	while(z->parent && z->parent->color == RED)
@@ -291,6 +334,9 @@ namespace ds
 	this->_root->color = BLACK;
       }
       
+      /*
+	transplant a subtree
+      */
       void transplant(Node* u, Node* v)
       {
 	if(u->parent==NULL)
@@ -303,6 +349,9 @@ namespace ds
 	  v->parent = u->parent;
       }
 
+      /*
+	perform the delete of an element from a node z
+      */
       void performDelete(Node* z)
       {
 	Node* x;
@@ -355,6 +404,9 @@ namespace ds
 	this->_size--;
       }
 
+      /*
+	perform the fixup for the delete operation
+      */
       void deleteFixup(Node* x)
       {
 	while(x!= this->_root && x->color==BLACK)
@@ -429,6 +481,9 @@ namespace ds
 	x->color = BLACK;
       }
 
+      /*
+	Get the successor of the node
+      */
       Node* successor(Node* x)
       {
 	if(x->right != NULL)
@@ -443,6 +498,9 @@ namespace ds
 	return y;
       }
 
+      /*
+	Get the predecessor of the node
+      */
       Node* predecessor(Node* x)
       {
 	if(x->left != NULL)
@@ -457,6 +515,9 @@ namespace ds
 	return y;
       }
 
+      /*
+	return the node having the largest element having value lower than a given element
+      */
       Node* lowerNode(const T& k)
       {
 	Node* x = this->_root;
@@ -482,6 +543,9 @@ namespace ds
 	return NULL;
       }
 
+      /*
+	return the node having the smallest element having value higher than a given element
+      */
       Node* higherNode(const T& k)
       {
 	Node* x = this->_root;
@@ -507,6 +571,9 @@ namespace ds
 	return NULL;
       }
       
+      /*
+	Get the minimum node of the subtree
+      */
       Node* minimum(Node* x)
       {
 	while(x->left != NULL )
@@ -514,6 +581,9 @@ namespace ds
 	return x;
       }
       
+      /*
+	Get the maximum node of the subtree
+      */
       Node* maximum(Node* x)
       {
 	while(x->right != NULL )
@@ -521,6 +591,9 @@ namespace ds
 	return x;
       }
 
+      /*
+	Method that searches for an element and return the node containing that element
+      */
       Node* search(Node* x, const T& k)
       {
 	while(x!= NULL && k!= x->key)
